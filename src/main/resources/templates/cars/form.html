@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Cars Manager'">Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav>
+        <a th:href="@{/}" class="brand">&#128663; Cars Manager</a>
+        <span class="nav-badge admin-badge">ADMIN</span>
+        <a th:href="@{/admin/cars}" class="nav-link">Fleet</a>
+        <a th:href="@{/shop}" class="nav-link">Customer View</a>
+    </nav>
+</header>
+<main>
+    <div class="page-header">
+        <h1 th:text="${pageTitle}">Form</h1>
+        <a th:href="@{/admin/cars}" class="btn btn-secondary">&larr; Back</a>
+    </div>
+    <div class="card">
+        <form th:action="${car.id == null ? '/admin/cars' : '/admin/cars/edit/' + car.id}"
+              method="post" th:object="${car}">
+
+            <div class="form-section-title">Vehicle Identity</div>
+            <div class="form-row-3">
+                <div class="form-group">
+                    <label>Type *</label>
+                    <select th:field="*{type}"
+                            th:classappend="${#fields.hasErrors('type')} ? 'input-error'">
+                        <option value="">-- Select type --</option>
+                        <option th:each="t : ${carTypes}" th:value="${t}" th:text="${t}"></option>
+                    </select>
+                    <span class="error-msg" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
+                </div>
+                <div class="form-group">
+                    <label>Brand *</label>
+                    <input type="text" th:field="*{brand}" placeholder="e.g. Toyota"
+                           th:classappend="${#fields.hasErrors('brand')} ? 'input-error'">
+                    <span class="error-msg" th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}"></span>
+                </div>
+                <div class="form-group">
+                    <label>Model *</label>
+                    <input type="text" th:field="*{model}" placeholder="e.g. Corolla"
+                           th:classappend="${#fields.hasErrors('model')} ? 'input-error'">
+                    <span class="error-msg" th:if="${#fields.hasErrors('model')}" th:errors="*{model}"></span>
+                </div>
+            </div>
+
+            <div class="form-row-3">
+                <div class="form-group">
+                    <label>Purchase Date *</label>
+                    <input type="date" th:field="*{purchaseDate}"
+                           th:classappend="${#fields.hasErrors('purchaseDate')} ? 'input-error'">
+                    <span class="error-msg" th:if="${#fields.hasErrors('purchaseDate')}" th:errors="*{purchaseDate}"></span>
+                </div>
+                <div class="form-group">
+                    <label>Max Passengers *</label>
+                    <input type="number" th:field="*{maxPassengers}" placeholder="5" min="1" max="20"
+                           th:classappend="${#fields.hasErrors('maxPassengers')} ? 'input-error'">
+                    <span class="error-msg" th:if="${#fields.hasErrors('maxPassengers')}" th:errors="*{maxPassengers}"></span>
+                </div>
+                <div class="form-group">
+                    <label>Max Speed (km/h) *</label>
+                    <input type="number" th:field="*{maxSpeed}" placeholder="200" min="1"
+                           th:classappend="${#fields.hasErrors('maxSpeed')} ? 'input-error'">
+                    <span class="error-msg" th:if="${#fields.hasErrors('maxSpeed')}" th:errors="*{maxSpeed}"></span>
+                </div>
+            </div>
+
+            <div class="form-section-title">Pricing</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Car Price ($) *</label>
+                    <input type="number" th:field="*{carPrice}" placeholder="25000" step="0.01" min="0.01"
+                           th:classappend="${#fields.hasErrors('carPrice')} ? 'input-error'">
+                    <span class="error-msg" th:if="${#fields.hasErrors('carPrice')}" th:errors="*{carPrice}"></span>
+                </div>
+                <div class="form-group">
+                    <label>Rental Price / Day ($) *</label>
+                    <input type="number" th:field="*{rentalPricePerDay}" placeholder="80" step="0.01" min="0.01"
+                           th:classappend="${#fields.hasErrors('rentalPricePerDay')} ? 'input-error'">
+                    <span class="error-msg" th:if="${#fields.hasErrors('rentalPricePerDay')}" th:errors="*{rentalPricePerDay}"></span>
+                </div>
+            </div>
+
+            <div class="form-section-title">Options</div>
+            <div class="form-row-options">
+                <label class="checkbox-card">
+                    <input type="checkbox" th:field="*{airConditioner}">
+                    <span class="checkbox-icon">&#10052;</span>
+                    <span class="checkbox-label">Air Conditioner</span>
+                </label>
+                <label class="checkbox-card">
+                    <input type="checkbox" th:field="*{automaticTransmission}">
+                    <span class="checkbox-icon">&#9881;</span>
+                    <span class="checkbox-label">Automatic Transmission</span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary"
+                        th:text="${car.id == null ? 'Save Car' : 'Update Car'}">Save</button>
+                <a th:href="@{/admin/cars}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</main>
+<footer><p>Cars Manager &copy; 2026</p></footer>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle + ' - Cars' : 'Cars Manager'}">Cars Manager</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a th:href="@{/cars}" class="brand">Cars Manager</a>
+            <a th:href="@{/cars}" class="nav-link">Liste</a>
+            <a th:href="@{/cars/new}" class="nav-link btn-primary">+ Ajouter</a>
+        </nav>
+    </header>
+
+    <main>
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+        <th:block th:fragment="content"><!-- contenu injecté ici --></th:block>
+    </main>
+
+    <footer>
+        <p>Cars Manager &copy; 2026</p>
+    </footer>
+</body>
+</html>

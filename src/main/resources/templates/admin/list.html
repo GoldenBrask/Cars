@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Car Fleet</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav>
+        <a th:href="@{/}" class="brand">&#128663; Cars Manager</a>
+        <span class="nav-badge admin-badge">ADMIN</span>
+        <a th:href="@{/admin/cars}" class="nav-link">Fleet</a>
+        <a th:href="@{/shop}" class="nav-link">Customer View</a>
+        <a th:href="@{/admin/cars/new}" class="nav-link btn-primary">+ Add Car</a>
+    </nav>
+</header>
+<main>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <div class="page-header">
+        <div>
+            <h1>&#9881; Car Fleet Management</h1>
+            <p th:text="${cars.size()} + ' car(s) in fleet'">0 cars</p>
+        </div>
+        <a th:href="@{/admin/cars/new}" class="btn btn-primary">+ Add Car</a>
+    </div>
+
+    <div class="table-container" style="overflow-x:auto;">
+        <table th:if="${!cars.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Purchase Date</th>
+                    <th>Car Price</th>
+                    <th>Rental/Day</th>
+                    <th>Passengers</th>
+                    <th>Max Speed</th>
+                    <th>A/C</th>
+                    <th>Auto</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="car : ${cars}">
+                    <td th:text="${car.id}"></td>
+                    <td><span class="badge-type" th:text="${car.type}" th:classappend="'badge-' + ${car.type.toString().toLowerCase()}"></span></td>
+                    <td th:text="${car.brand}"></td>
+                    <td th:text="${car.model}"></td>
+                    <td th:text="${#temporals.format(car.purchaseDate, 'dd/MM/yyyy')}"></td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(car.carPrice, 1, 'COMMA', 2, 'POINT')}"></td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(car.rentalPricePerDay, 1, 'COMMA', 2, 'POINT')}"></td>
+                    <td class="text-center" th:text="${car.maxPassengers}"></td>
+                    <td class="text-center" th:text="${car.maxSpeed} + ' km/h'"></td>
+                    <td class="text-center">
+                        <span th:if="${car.airConditioner}" class="icon-yes">&#10003;</span>
+                        <span th:unless="${car.airConditioner}" class="icon-no">&#10007;</span>
+                    </td>
+                    <td class="text-center">
+                        <span th:if="${car.automaticTransmission}" class="icon-yes">&#10003;</span>
+                        <span th:unless="${car.automaticTransmission}" class="icon-no">&#10007;</span>
+                    </td>
+                    <td class="actions">
+                        <a th:href="@{/admin/cars/edit/{id}(id=${car.id})}" class="btn btn-sm btn-warning">Edit</a>
+                        <form th:action="@{/admin/cars/delete/{id}(id=${car.id})}" method="post" style="display:inline"
+                              onsubmit="return confirm('Delete this car?')">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div th:if="${cars.isEmpty()}" class="empty-state">
+            <div class="empty-icon">&#128663;</div>
+            <p>No cars in the fleet yet.</p>
+            <a th:href="@{/admin/cars/new}" class="btn btn-primary">Add the first car</a>
+        </div>
+    </div>
+</main>
+<footer><p>Cars Manager &copy; 2026</p></footer>
+</body>
+</html>

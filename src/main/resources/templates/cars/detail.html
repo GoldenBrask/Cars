@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${car.brand} + ' ' + ${car.model} + ' - Cars Manager'">Car Detail</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav>
+        <a th:href="@{/}" class="brand">&#128663; Cars Manager</a>
+        <span class="nav-badge admin-badge">ADMIN</span>
+        <a th:href="@{/admin/cars}" class="nav-link">Fleet</a>
+    </nav>
+</header>
+<main>
+    <div class="page-header">
+        <h1 th:text="${car.brand} + ' ' + ${car.model}">Car</h1>
+        <a th:href="@{/admin/cars}" class="btn btn-secondary">&larr; Back</a>
+    </div>
+    <div class="card detail-card">
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">Type</span>
+                <span class="badge-type" th:text="${car.type}" th:classappend="'badge-' + ${car.type.toString().toLowerCase()}"></span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Brand</span>
+                <span class="detail-value" th:text="${car.brand}">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Model</span>
+                <span class="detail-value" th:text="${car.model}">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Purchase Date</span>
+                <span class="detail-value" th:text="${#temporals.format(car.purchaseDate, 'dd/MM/yyyy')}">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Car Price</span>
+                <span class="detail-value price" th:text="'$' + ${#numbers.formatDecimal(car.carPrice, 1, 'COMMA', 2, 'POINT')}">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Rental / Day</span>
+                <span class="detail-value price" th:text="'$' + ${#numbers.formatDecimal(car.rentalPricePerDay, 1, 'COMMA', 2, 'POINT')}">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Max Passengers</span>
+                <span class="detail-value" th:text="${car.maxPassengers}">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Max Speed</span>
+                <span class="detail-value" th:text="${car.maxSpeed} + ' km/h'">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Air Conditioner</span>
+                <span th:if="${car.airConditioner}" class="icon-yes">&#10003; Yes</span>
+                <span th:unless="${car.airConditioner}" class="icon-no">&#10007; No</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Transmission</span>
+                <span th:if="${car.automaticTransmission}" class="icon-yes">&#9881; Automatic</span>
+                <span th:unless="${car.automaticTransmission}" class="icon-no">Manual</span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <a th:href="@{/admin/cars/edit/{id}(id=${car.id})}" class="btn btn-warning">Edit</a>
+            <form th:action="@{/admin/cars/delete/{id}(id=${car.id})}" method="post" style="display:inline"
+                  onsubmit="return confirm('Delete this car?')">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+</main>
+<footer><p>Cars Manager &copy; 2026</p></footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Cars Manager</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav>
+        <a th:href="@{/}" class="brand">&#128663; Cars Manager</a>
+        <span class="nav-badge user-badge">CUSTOMER</span>
+        <a th:href="@{/shop}" class="nav-link">Catalog</a>
+        <a th:href="@{/admin/cars}" class="nav-link">Admin Panel</a>
+    </nav>
+</header>
+<main>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <div class="page-header">
+        <div>
+            <h1>&#128663; Car Catalog</h1>
+            <p th:text="${cars.size()} + ' car(s) available'">0 cars</p>
+        </div>
+    </div>
+
+    <form th:action="@{/shop}" method="get" class="search-form">
+        <input type="text" name="search" placeholder="Search by brand..." th:value="${search}" class="search-input">
+        <button type="submit" class="btn btn-secondary">Search</button>
+        <a th:href="@{/shop}" class="btn btn-link" th:if="${search != null and !search.isEmpty()}">Clear</a>
+    </form>
+
+    <div th:if="${cars.isEmpty()}" class="empty-state">
+        <div class="empty-icon">&#128663;</div>
+        <p>No cars available at the moment.</p>
+    </div>
+
+    <div class="car-grid">
+        <div class="car-card" th:each="car : ${cars}">
+            <div class="car-card-header">
+                <span class="badge-type" th:text="${car.type}" th:classappend="'badge-' + ${car.type.toString().toLowerCase()}"></span>
+            </div>
+            <div class="car-card-body">
+                <h3 th:text="${car.brand} + ' ' + ${car.model}">Brand Model</h3>
+                <div class="car-specs">
+                    <span title="Passengers">&#128100; <span th:text="${car.maxPassengers}"></span></span>
+                    <span title="Max speed">&#9889; <span th:text="${car.maxSpeed} + ' km/h'"></span></span>
+                    <span th:if="${car.airConditioner}" title="Air conditioning">&#10052; A/C</span>
+                    <span th:if="${car.automaticTransmission}" title="Automatic">&#9881; Auto</span>
+                </div>
+                <div class="car-prices">
+                    <div class="price-rental">
+                        <span class="price-label">Rental / Day</span>
+                        <span class="price-value" th:text="'$' + ${#numbers.formatDecimal(car.rentalPricePerDay, 1, 'COMMA', 2, 'POINT')}"></span>
+                    </div>
+                    <div class="price-buy">
+                        <span class="price-label">Buy Price</span>
+                        <span class="price-value" th:text="'$' + ${#numbers.formatDecimal(car.carPrice, 1, 'COMMA', 2, 'POINT')}"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="car-card-footer">
+                <a th:href="@{/shop/rent/{id}(id=${car.id})}" class="btn btn-primary">&#128197; Rent</a>
+                <a th:href="@{/shop/buy/{id}(id=${car.id})}" class="btn btn-success">&#128179; Buy</a>
+            </div>
+        </div>
+    </div>
+</main>
+<footer><p>Cars Manager &copy; 2026</p></footer>
+</body>
+</html>

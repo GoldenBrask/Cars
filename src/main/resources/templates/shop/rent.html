@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent a Car - Cars Manager</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav>
+        <a th:href="@{/}" class="brand">&#128663; Cars Manager</a>
+        <span class="nav-badge user-badge">CUSTOMER</span>
+        <a th:href="@{/shop}" class="nav-link">Catalog</a>
+    </nav>
+</header>
+<main>
+    <div class="page-header">
+        <h1>&#128197; Rent a Car</h1>
+        <a th:href="@{/shop}" class="btn btn-secondary">&larr; Back</a>
+    </div>
+
+    <div class="transaction-layout">
+        <!-- Car summary -->
+        <div class="car-summary card">
+            <h3 th:text="${car.brand} + ' ' + ${car.model}">Car</h3>
+            <span class="badge-type" th:text="${car.type}" th:classappend="'badge-' + ${car.type.toString().toLowerCase()}"></span>
+            <div class="summary-details">
+                <div class="summary-row"><span>Max Passengers</span><strong th:text="${car.maxPassengers}"></strong></div>
+                <div class="summary-row"><span>Max Speed</span><strong th:text="${car.maxSpeed} + ' km/h'"></strong></div>
+                <div class="summary-row"><span>Air Conditioner</span>
+                    <strong th:text="${car.airConditioner ? 'Yes' : 'No'}"></strong></div>
+                <div class="summary-row"><span>Transmission</span>
+                    <strong th:text="${car.automaticTransmission ? 'Automatic' : 'Manual'}"></strong></div>
+                <div class="summary-row highlight"><span>Price / Day</span>
+                    <strong th:text="'$' + ${#numbers.formatDecimal(car.rentalPricePerDay, 1, 'COMMA', 2, 'POINT')}"></strong></div>
+            </div>
+        </div>
+
+        <!-- Rent form -->
+        <div class="card">
+            <h3>Rental Details</h3>
+            <form th:action="@{/shop/rent/{id}(id=${car.id})}" method="post">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" name="customerName" placeholder="e.g. John Doe" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date *</label>
+                        <input type="date" name="startDate" required
+                               th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="form-group">
+                        <label>End Date *</label>
+                        <input type="date" name="endDate" required
+                               th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+                </div>
+                <p class="hint">&#8505; Total = price/day &times; number of days</p>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Confirm Rental</button>
+                    <a th:href="@{/shop}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<footer><p>Cars Manager &copy; 2026</p></footer>
+</body>
+</html>

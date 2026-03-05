@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy a Car - Cars Manager</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav>
+        <a th:href="@{/}" class="brand">&#128663; Cars Manager</a>
+        <span class="nav-badge user-badge">CUSTOMER</span>
+        <a th:href="@{/shop}" class="nav-link">Catalog</a>
+    </nav>
+</header>
+<main>
+    <div class="page-header">
+        <h1>&#128179; Buy a Car</h1>
+        <a th:href="@{/shop}" class="btn btn-secondary">&larr; Back</a>
+    </div>
+
+    <div class="transaction-layout">
+        <!-- Car summary -->
+        <div class="car-summary card">
+            <h3 th:text="${car.brand} + ' ' + ${car.model}">Car</h3>
+            <span class="badge-type" th:text="${car.type}" th:classappend="'badge-' + ${car.type.toString().toLowerCase()}"></span>
+            <div class="summary-details">
+                <div class="summary-row"><span>Purchase Date</span>
+                    <strong th:text="${#temporals.format(car.purchaseDate, 'dd/MM/yyyy')}"></strong></div>
+                <div class="summary-row"><span>Max Passengers</span><strong th:text="${car.maxPassengers}"></strong></div>
+                <div class="summary-row"><span>Max Speed</span><strong th:text="${car.maxSpeed} + ' km/h'"></strong></div>
+                <div class="summary-row"><span>Air Conditioner</span>
+                    <strong th:text="${car.airConditioner ? 'Yes' : 'No'}"></strong></div>
+                <div class="summary-row"><span>Transmission</span>
+                    <strong th:text="${car.automaticTransmission ? 'Automatic' : 'Manual'}"></strong></div>
+                <div class="summary-row highlight"><span>Sale Price</span>
+                    <strong th:text="'$' + ${#numbers.formatDecimal(car.carPrice, 1, 'COMMA', 2, 'POINT')}"></strong></div>
+            </div>
+        </div>
+
+        <!-- Buy form -->
+        <div class="card">
+            <h3>Purchase Confirmation</h3>
+            <form th:action="@{/shop/buy/{id}(id=${car.id})}" method="post">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" name="customerName" placeholder="e.g. John Doe" required>
+                </div>
+                <div class="confirm-box">
+                    <p>You are about to purchase:</p>
+                    <p class="confirm-car" th:text="${car.brand} + ' ' + ${car.model}"></p>
+                    <p class="confirm-price" th:text="'Total: $' + ${#numbers.formatDecimal(car.carPrice, 1, 'COMMA', 2, 'POINT')}"></p>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Confirm Purchase</button>
+                    <a th:href="@{/shop}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<footer><p>Cars Manager &copy; 2026</p></footer>
+</body>
+</html>

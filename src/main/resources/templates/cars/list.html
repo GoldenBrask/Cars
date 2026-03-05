@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Fleet - Cars Manager</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav>
+        <a th:href="@{/cars}" class="brand">&#128663; Cars Manager</a>
+        <a th:href="@{/cars}" class="nav-link">Fleet</a>
+        <a th:href="@{/cars/new}" class="nav-link btn-primary">+ Add Car</a>
+    </nav>
+</header>
+
+<main>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <div class="page-header">
+        <div>
+            <h1>Car Fleet</h1>
+            <p th:text="${cars.size()} + ' car(s) registered'">0 car(s)</p>
+        </div>
+        <a th:href="@{/cars/new}" class="btn btn-primary">+ Add Car</a>
+    </div>
+
+    <!-- Search bar -->
+    <form th:action="@{/cars}" method="get" class="search-form">
+        <input type="text" name="search" placeholder="Search by brand..."
+               th:value="${search}" class="search-input">
+        <button type="submit" class="btn btn-secondary">Search</button>
+        <a th:href="@{/cars}" class="btn btn-link" th:if="${search != null and !search.isEmpty()}">Clear</a>
+    </form>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table th:if="${!cars.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Brand</th>
+                    <th>Model</th>
+                    <th>Purchase Date</th>
+                    <th>Car Price</th>
+                    <th>Rental/Day</th>
+                    <th>Passengers</th>
+                    <th>Max Speed</th>
+                    <th>A/C</th>
+                    <th>Auto</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="car : ${cars}">
+                    <td th:text="${car.id}">1</td>
+                    <td>
+                        <span class="badge-type" th:text="${car.type}"
+                              th:classappend="'badge-' + ${car.type.toString().toLowerCase()}">SEDAN</span>
+                    </td>
+                    <td th:text="${car.brand}">Toyota</td>
+                    <td th:text="${car.model}">Corolla</td>
+                    <td th:text="${#temporals.format(car.purchaseDate, 'dd/MM/yyyy')}">01/01/2023</td>
+                    <td th:text="${#numbers.formatDecimal(car.carPrice, 1, 'COMMA', 2, 'POINT')} + ' $'">0.00 $</td>
+                    <td th:text="${#numbers.formatDecimal(car.rentalPricePerDay, 1, 'COMMA', 2, 'POINT')} + ' $/day'">0.00 $/day</td>
+                    <td class="text-center" th:text="${car.maxPassengers}">5</td>
+                    <td class="text-center" th:text="${car.maxSpeed} + ' km/h'">200 km/h</td>
+                    <td class="text-center">
+                        <span th:if="${car.airConditioner}" class="icon-yes" title="Yes">&#10003;</span>
+                        <span th:unless="${car.airConditioner}" class="icon-no" title="No">&#10007;</span>
+                    </td>
+                    <td class="text-center">
+                        <span th:if="${car.automaticTransmission}" class="icon-yes" title="Automatic">&#10003;</span>
+                        <span th:unless="${car.automaticTransmission}" class="icon-no" title="Manual">&#10007;</span>
+                    </td>
+                    <td class="actions">
+                        <a th:href="@{/cars/{id}(id=${car.id})}" class="btn btn-sm btn-info">View</a>
+                        <a th:href="@{/cars/edit/{id}(id=${car.id})}" class="btn btn-sm btn-warning">Edit</a>
+                        <form th:action="@{/cars/delete/{id}(id=${car.id})}" method="post"
+                              style="display:inline"
+                              onsubmit="return confirm('Delete this car?')">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${cars.isEmpty()}" class="empty-state">
+            <div class="empty-icon">&#128663;</div>
+            <p>No cars found.</p>
+            <a th:href="@{/cars/new}" class="btn btn-primary">Add the first car</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>Cars Manager &copy; 2026</p>
+</footer>
+</body>
+</html>
