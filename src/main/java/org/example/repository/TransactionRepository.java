@@ -21,4 +21,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     boolean existsOverlappingRental(@Param("carId") Long carId,
                                     @Param("startDate") LocalDate startDate,
                                     @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT t FROM Transaction t WHERE t.car.id = :carId AND t.type = org.example.model.TransactionType.RENTAL")
+    List<Transaction> findRentalsByCarId(@Param("carId") Long carId);
 }

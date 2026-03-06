@@ -45,14 +45,27 @@ public class ShopController {
     public String showRentForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
         Optional<Car> car = carService.findById(id);
         if (car.isEmpty()) {
-            ra.addFlashAttribute("errorMessage", "Car not found.");
+            ra.addFlashAttribute("errorMessage", "Véhicule introuvable.");
             return "redirect:/shop";
         }
         if (transactionService.isCarSold(id)) {
-            ra.addFlashAttribute("errorMessage", "This car has already been sold and is no longer available.");
+            ra.addFlashAttribute("errorMessage", "Ce véhicule a déjà été vendu et n'est plus disponible.");
             return "redirect:/shop";
         }
+
+        // Construire la liste des périodes déjà réservées sous forme de JSON pour le JS front
+        List<Transaction> rentals = transactionService.findRentalsByCarId(id);
+        StringBuilder periodesJson = new StringBuilder("[");
+        for (int i = 0; i < rentals.size(); i++) {
+            Transaction r = rentals.get(i);
+            periodesJson.append("{\"start\":\"").append(r.getStartDate()).append("\",")
+                        .append("\"end\":\"").append(r.getEndDate()).append("\"}");
+            if (i < rentals.size() - 1) periodesJson.append(",");
+        }
+        periodesJson.append("]");
+
         model.addAttribute("car", car.get());
+        model.addAttribute("periodesReservees", periodesJson.toString());
         return "shop/rent";
     }
 
@@ -74,12 +87,12 @@ public class ShopController {
         long days = ChronoUnit.DAYS.between(start, end);
 
         if (days <= 0) {
-            ra.addFlashAttribute("errorMessage", "End date must be after start date.");
+            ra.addFlashAttribute("errorMessage", "La date de fin doit être postérieure à la date de début.");
             return "redirect:/shop/rent/" + id;
         }
 
         if (!transactionService.isCarAvailableForRent(id, start, end)) {
-            ra.addFlashAttribute("errorMessage", "This car is not available for the selected dates.");
+            ra.addFlashAttribute("errorMessage", "Ce véhicule n'est pas disponible pour les dates sélectionnées.");
             return "redirect:/shop/rent/" + id;
         }
 
@@ -93,7 +106,7 @@ public class ShopController {
         transactionService.save(t);
 
         ra.addFlashAttribute("successMessage",
-                "Rental confirmed for " + days + " day(s)! Total: $" + t.getTotalPrice());
+                "Location confirmée pour " + days + " jour(s) ! Total : " + t.getTotalPrice() + " $");
         return "redirect:/shop";
     }
 
@@ -105,7 +118,7 @@ public class ShopController {
             return "redirect:/shop";
         }
         if (transactionService.isCarSold(id)) {
-            ra.addFlashAttribute("errorMessage", "This car has already been sold.");
+            ra.addFlashAttribute("errorMessage", "Ce véhicule a déjà été vendu.");
             return "redirect:/shop";
         }
         model.addAttribute("car", car.get());
@@ -122,7 +135,7 @@ public class ShopController {
             return "redirect:/shop";
         }
         if (transactionService.isCarSold(id)) {
-            ra.addFlashAttribute("errorMessage", "This car has already been sold.");
+            ra.addFlashAttribute("errorMessage", "Ce véhicule a déjà été vendu.");
             return "redirect:/shop";
         }
 
@@ -136,7 +149,7 @@ public class ShopController {
         transactionService.save(t);
 
         ra.addFlashAttribute("successMessage",
-                "Purchase confirmed! " + car.getBrand() + " " + car.getModel() + " bought for $" + car.getCarPrice());
+                "Achat confirmé ! " + car.getBrand() + " " + car.getModel() + " acheté pour " + car.getCarPrice() + " $");
         return "redirect:/shop";
     }
 }

@@ -31,4 +31,8 @@ public class TransactionService {
         if (isCarSold(carId)) return false;
         return !transactionRepository.existsOverlappingRental(carId, startDate, endDate);
     }
+
+    public List<Transaction> findRentalsByCarId(Long carId) {
+        return transactionRepository.findRentalsByCarId(carId);
+    }
 }
