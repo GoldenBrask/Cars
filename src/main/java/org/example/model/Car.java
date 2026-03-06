@@ -60,7 +60,6 @@ public class Car {
     @Column(name = "automatic_transmission", nullable = false)
     private boolean automaticTransmission;
 
-    // Constructors
     public Car() {}
 
     public Car(CarType type, String brand, String model, LocalDate purchaseDate,
@@ -79,7 +78,6 @@ public class Car {
         this.automaticTransmission = automaticTransmission;
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -21,7 +21,6 @@ public class CarController {
     @Autowired
     private CarService carService;
 
-    // List all cars with optional search by brand
     @GetMapping
     public String listCars(Model model,
                            @RequestParam(required = false) String search) {
@@ -37,7 +36,6 @@ public class CarController {
         return "cars/list";
     }
 
-    // Show create form
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("car", new Car());
@@ -46,7 +44,6 @@ public class CarController {
         return "cars/form";
     }
 
-    // Save new car
     @PostMapping
     public String createCar(@Valid @ModelAttribute Car car, BindingResult result,
                             Model model, RedirectAttributes redirectAttributes) {
@@ -60,7 +57,6 @@ public class CarController {
         return "redirect:/cars";
     }
 
-    // Show edit form
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Car> car = carService.findById(id);
@@ -74,7 +70,6 @@ public class CarController {
         return "cars/form";
     }
 
-    // Update car
     @PostMapping("/edit/{id}")
     public String updateCar(@PathVariable Long id, @Valid @ModelAttribute Car car,
                             BindingResult result, Model model, RedirectAttributes redirectAttributes) {
@@ -89,7 +84,6 @@ public class CarController {
         return "redirect:/cars";
     }
 
-    // Delete car
     @PostMapping("/delete/{id}")
     public String deleteCar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         if (!carService.existsById(id)) {
@@ -101,7 +95,6 @@ public class CarController {
         return "redirect:/cars";
     }
 
-    // View car detail
     @GetMapping("/{id}")
     public String viewCar(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Car> car = carService.findById(id);

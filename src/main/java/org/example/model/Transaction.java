@@ -17,7 +17,7 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionType type; // RENTAL or PURCHASE
+    private TransactionType type;
 
     @Column(name = "customer_name", nullable = false)
     private String customerName;
@@ -25,7 +25,6 @@ public class Transaction {
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    // only for RENTAL: end date
     @Column(name = "end_date")
     private LocalDate endDate;
 
@@ -34,7 +33,6 @@ public class Transaction {
 
     public Transaction() {}
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
