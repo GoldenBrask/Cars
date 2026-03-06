@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,13 +29,21 @@ public class ShopController {
 
     @GetMapping
     public String catalog(Model model, @RequestParam(required = false) String search) {
-        List<Car> allCars = (search != null && !search.isBlank())
-                ? carService.findByBrand(search)
-                : carService.findAll();
+        List<Car> allCars;
 
-        List<Car> availableCars = allCars.stream()
-                .filter(c -> !transactionService.isCarSold(c.getId()))
-                .collect(Collectors.toList());
+        if (search != null && !search.isBlank()) {
+            allCars = carService.findByBrand(search);
+        } else {
+            allCars = carService.findAll();
+        }
+
+        List<Car> availableCars = new ArrayList<>();
+
+        for (Car c : allCars) {
+            if (!transactionService.isCarSold(c.getId())) {
+                availableCars.add(c);
+            }
+        }
 
         model.addAttribute("cars", availableCars);
         model.addAttribute("search", search);
@@ -53,7 +62,7 @@ public class ShopController {
             return "redirect:/shop";
         }
 
-        // Construire la liste des périodes déjà réservées sous forme de JSON pour le JS front
+
         List<Transaction> rentals = transactionService.findRentalsByCarId(id);
         StringBuilder periodesJson = new StringBuilder("[");
         for (int i = 0; i < rentals.size(); i++) {
